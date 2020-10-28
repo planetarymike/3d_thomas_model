@@ -126,8 +126,7 @@ void lineshape_tracker::update_start(const Real &T, const Real &T_ref,
 				     const Real &abs,
 				     const Real &pathlength)
 {
-  tau_species_final = (tau_species_initial
-		       + dtau_species * pathlength);
+  tau_species_final = (tau_species_initial + dtau_species * pathlength);
   assert(!std::isnan(tau_species_final)
 	 && tau_species_final>=0
 	 && "optical depths must be real numbers");
@@ -170,10 +169,10 @@ void lineshape_tracker::update_start(const Real &T, const Real &T_ref,
 
     // holstein T final represents a frequency-averaged absorption and
     // uses lineshape_at_origin
-    holstein_T_final += (holTcoef * lineshape_at_origin[i_lambda] *
-                         transfer_probability_lambda_final);
-    assert(!std::isnan(holstein_T_final) && holstein_T_final >= 0 &&
-           holstein_T_final <= 1 &&
+    holstein_T_final += (holTcoef
+			 * lineshape_at_origin[i_lambda]
+			 * transfer_probability_lambda_final);
+    assert(!std::isnan(holstein_T_final) && holstein_T_final >= 0 && holstein_T_final <= 1 &&
            "holstein function represents a probability");
 
     // holstein_T_int represents a frequency averaged emission and

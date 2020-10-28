@@ -21,6 +21,8 @@ void RT_grid<N_EMISSIONS,grid_type,influence_type>::RT_to_device() {
 			     sizeof(RT_grid_type),
 			     cudaMemcpyHostToDevice)
 		  );
+
+  grid.to_device(&(d_RT->grid));
 }
 
 template <int N_EMISSIONS, typename grid_type, typename influence_type>
@@ -146,6 +148,11 @@ template <int N_EMISSIONS, typename grid_type, typename influence_type>
 __global__
 void influence_kernel(RT_grid<N_EMISSIONS,grid_type,influence_type> *RT)
 {
+  // if (blockIdx.x==0 && threadIdx.x==0) {
+  //   printf("Hello from block %d, thread %d: RT->grid.radial_boundaries[0] = %f\n",
+  // 	   blockIdx.x, threadIdx.x, (RT->grid).radial_boundaries[0]);
+  // }
+  
   //each thread runs one line of sight for one voxel
   int i_vox = blockIdx.x;
   int i_ray = threadIdx.x;

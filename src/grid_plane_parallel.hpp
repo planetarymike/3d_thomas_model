@@ -4,6 +4,7 @@
 #define __grid_plane_parallel
 
 #include "Real.hpp"
+#include "grid_dims.hpp"
 #include "grid.hpp"
 #include "coordinate_generation.hpp"
 #include "boundaries.hpp"
@@ -29,12 +30,26 @@ struct plane_parallel_grid : grid<1,//this is a 1d grid
   static const int rmethod_log_n_species= 1;
 
   static const int n_radial_boundaries = N_RADIAL_BOUNDARIES;
-  Real radial_boundaries[n_radial_boundaries];
-  Real pts_radii[n_radial_boundaries-1];
-  plane radial_boundary_planes[n_radial_boundaries];
+  Real *radial_boundaries;
+  Real *pts_radii;
+  plane *radial_boundary_planes;
   
-  plane_parallel_grid() { }
-  
+  plane_parallel_grid() {
+    rmethod = rmethod_log_n_species;
+
+    radial_boundaries = new Real[n_radial_boundaries];
+    pts_radii = new Real[n_radial_boundaries-1];
+    radial_boundary_planes = new plane[n_radial_boundaries];
+  }
+  ~plane_parallel_grid() {
+    delete [] radial_boundaries;
+    delete [] pts_radii;
+    delete [] radial_boundary_planes;
+  }
+  void to_device(plane_parallel_grid
+		 <N_RADIAL_BOUNDARIES,
+		 N_RAYS_THETA> *device_grid);
+    
   void setup_voxels(const atmosphere &atm)
   {
     this->rmin = atm.rmin;
@@ -229,5 +244,9 @@ struct plane_parallel_grid : grid<1,//this is a 1d grid
   }
 
 };
+
+#ifdef __CUDACC__
+#include "grid_plane_parallel_gpu.cu"
+#endif
 
 #endif

@@ -93,43 +93,43 @@ atmo_point atmo_point::operator/(const Real & scale) const {
 
 
 //atmo_voxel
-CUDA_CALLABLE_MEMBER
-atmo_voxel::atmo_voxel() {
-  // init = false;
-  i_voxel = -1;
-}
+// CUDA_CALLABLE_MEMBER
+// atmo_voxel::atmo_voxel() {
+//   // init = false;
+//   //i_voxel = -1;
+// }
 
-CUDA_CALLABLE_MEMBER
-atmo_voxel::~atmo_voxel() { };
+// CUDA_CALLABLE_MEMBER
+// atmo_voxel::~atmo_voxel() { };
 
-CUDA_CALLABLE_MEMBER
-atmo_voxel::atmo_voxel(const atmo_voxel &copy) {
-  rbounds[0]=copy.rbounds[0];
-  rbounds[1]=copy.rbounds[1];
-  tbounds[0]=copy.tbounds[0];
-  tbounds[1]=copy.tbounds[1];
-  pbounds[0]=copy.pbounds[0];
-  pbounds[1]=copy.pbounds[1];
-  i_voxel=copy.i_voxel;
-  // init=copy.init;
-  pt=copy.pt;
-}
+// CUDA_CALLABLE_MEMBER
+// atmo_voxel::atmo_voxel(const atmo_voxel &copy) {
+//   rbounds[0]=copy.rbounds[0];
+//   rbounds[1]=copy.rbounds[1];
+//   tbounds[0]=copy.tbounds[0];
+//   tbounds[1]=copy.tbounds[1];
+//   pbounds[0]=copy.pbounds[0];
+//   pbounds[1]=copy.pbounds[1];
+//   i_voxel=copy.i_voxel;
+//   // init=copy.init;
+//   pt=copy.pt;
+// }
 
-CUDA_CALLABLE_MEMBER
-atmo_voxel & atmo_voxel::operator=(const atmo_voxel &rhs) {
-  if(this == &rhs) return *this;
-  rbounds[0]=rhs.rbounds[0];
-  rbounds[1]=rhs.rbounds[1];
-  tbounds[0]=rhs.tbounds[0];
-  tbounds[1]=rhs.tbounds[1];
-  pbounds[0]=rhs.pbounds[0];
-  pbounds[1]=rhs.pbounds[1];
-  i_voxel=rhs.i_voxel;
-  // init=rhs.init;
-  pt=rhs.pt;
+// CUDA_CALLABLE_MEMBER
+// atmo_voxel & atmo_voxel::operator=(const atmo_voxel &rhs) {
+//   if(this == &rhs) return *this;
+//   rbounds[0]=rhs.rbounds[0];
+//   rbounds[1]=rhs.rbounds[1];
+//   tbounds[0]=rhs.tbounds[0];
+//   tbounds[1]=rhs.tbounds[1];
+//   pbounds[0]=rhs.pbounds[0];
+//   pbounds[1]=rhs.pbounds[1];
+//   i_voxel=rhs.i_voxel;
+//   // init=rhs.init;
+//   pt=rhs.pt;
 
-  return *this;
-}
+//   return *this;
+// }
 
 
 

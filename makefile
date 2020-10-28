@@ -11,6 +11,7 @@ SRCDIR = src
 SRCFILES = $(wildcard $(SRCDIR)/atm/*.cpp) $(wildcard $(SRCDIR)/*.cpp) 
 
 NSRCFILES = $(SRCFILES) generate_source_function.cpp
+NSRCFILES := $(filter-out src/observation_fit.cpp, $(NSRCFILES))
 NOBJFILES    := $(filter %.o, $(NSRCFILES:%.cpp=$(OBJDIR)/%.cuda.o)       $(NSRCFILES:%.cu=$(OBJDIR)/%.cuda.o      ))
 NOBJFILESDBG := $(filter %.o, $(NSRCFILES:%.cpp=$(OBJDIR)/%.cuda.debug.o) $(NSRCFILES:%.cu=$(OBJDIR)/%.cuda.debug.o))
 

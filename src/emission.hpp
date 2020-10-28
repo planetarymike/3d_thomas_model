@@ -123,7 +123,7 @@ struct emission {
 	      void (boost::type_identity<C>::type::*species_T_function)(const atmo_voxel &vox, Real &ret_avg, Real &ret_pt) const,
 	      void (boost::type_identity<C>::type::*absorber_density_function)(const atmo_voxel &vox, Real &ret_avg, Real &ret_pt) const,
 	      Real (boost::type_identity<C>::type::*absorber_sigma_function)(const Real &T) const,
-	      const atmo_voxel (&voxels)[n_voxels]) {
+	      const atmo_voxel *voxels) {
     
     branching_ratio     = emission_branching_ratio;
     species_T_ref       = species_T_reff;

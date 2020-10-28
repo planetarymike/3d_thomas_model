@@ -4,6 +4,7 @@
 #define __grid_spherical_azimuthally_symmetric
 
 #include "Real.hpp"
+#include "grid_dims.hpp"
 #include "cuda_compatibility.hpp"
 #include "grid.hpp"
 #include "coordinate_generation.hpp"
@@ -34,10 +35,10 @@ struct spherical_azimuthally_symmetric_grid : grid<2, //this is a 2D grid
   static const int rmethod_altitude = 0;
   static const int rmethod_log_n_species = 1;
     
-  Real radial_boundaries[n_radial_boundaries];
-  Real pts_radii[n_radial_boundaries-1];
-  Real log_pts_radii[n_radial_boundaries-1];
-  sphere radial_boundary_spheres[n_radial_boundaries];
+  Real *radial_boundaries;
+  Real *pts_radii;
+  Real *log_pts_radii;
+  sphere *radial_boundary_spheres;
 
   static const int sza_dimension = 1;
   static const int n_sza_boundaries = N_SZA_BOUNDARIES;
@@ -45,108 +46,67 @@ struct spherical_azimuthally_symmetric_grid : grid<2, //this is a 2D grid
   static const int szamethod_uniform = 0;
   static const int szamethod_uniform_cos = 1;
 
-  Real sza_boundaries[n_sza_boundaries];
-  Real pts_sza[n_sza_boundaries-1];
-  cone sza_boundary_cones[n_sza_boundaries-2];//there are extra
-					      //boundaries outside of
-					      //the range to put
-					      //pts_sza=0,-1 on the
-					      //planet-sun line
+  Real *sza_boundaries;
+  Real *pts_sza;
+  cone *sza_boundary_cones;
 
   int n_pts[parent_grid::n_dimensions] = {n_radial_boundaries-1,n_sza_boundaries-1};
-
 
   int raymethod_theta;
   static const int raymethod_theta_gauss = 0;
   static const int raymethod_theta_uniform = 1;
      
   static const int n_theta = N_RAY_THETA;
-  Real ray_theta[n_theta];
+  Real *ray_theta;
   static const int n_phi = N_RAY_PHI;
-  Real ray_phi[n_phi];
+  Real *ray_phi;
 
-  spherical_azimuthally_symmetric_grid()
+  spherical_azimuthally_symmetric_grid() : parent_grid()
   {
     rmethod = rmethod_altitude;
     szamethod = szamethod_uniform;
     raymethod_theta = raymethod_theta_gauss;
+
+    radial_boundaries = new Real[n_radial_boundaries];
+    pts_radii = new Real[n_radial_boundaries-1];
+    log_pts_radii = new Real[n_radial_boundaries-1];
+    radial_boundary_spheres = new sphere[n_radial_boundaries];
+
+    //there are extra boundaries outside of the range to put
+    //pts_sza=0,-1 on the planet-sun line
+    sza_boundaries = new Real[n_sza_boundaries];
+    pts_sza = new Real[n_sza_boundaries-1];
+    sza_boundary_cones = new cone[n_sza_boundaries-2];
+
+    // n_pts = new int[parent_grid::n_dimensions];
+    // n_pts[0] = n_radial_boundaries-1;
+    // n_pts[1] = n_sza_boundaries-1;
+    
+    ray_theta = new Real[n_theta];
+    ray_phi = new Real[n_phi];
   }
+  ~spherical_azimuthally_symmetric_grid()
+  {
+    delete [] radial_boundaries;
+    delete [] pts_radii;
+    delete [] log_pts_radii;
+    delete [] radial_boundary_spheres;
 
-  // spherical_azimuthally_symmetric_grid
-  // (const spherical_azimuthally_symmetric_grid<N_RADIAL_BOUNDARIES,
-  //                                             N_SZA_BOUNDARIES,
-  // 				              N_RAY_THETA,
-  // 				              N_RAY_PHI> &copy) {
-  //   rmethod = copy.rmethod;
-  //   for (int ir=0; ir<n_radial_boundaries-1; ir++) {
-  //     pts_radii[ir] = copy.pts_radii[ir];
-  //     log_pts_radii[ir] = copy.log_pts_radii[ir];
-  //     radial_boundaries[ir] = copy.radial_boundaries[ir];
-  //     radial_boundary_spheres[ir] = copy.radial_boundary_spheres[ir];
-  //   }
-  //   radial_boundaries[n_radial_boundaries-1] = copy.radial_boundaries[n_radial_boundaries-1];
-  //   radial_boundary_spheres[n_radial_boundaries-1] = copy.radial_boundary_spheres[n_radial_boundaries-1];
+    delete [] sza_boundaries;
+    delete [] pts_sza;
+    delete [] sza_boundary_cones;
 
-  //   szamethod = copy.szamethod;
-  //   for (int isza=0; isza<n_sza_boundaries-1; isza++) {
-  //     pts_sza[isza] = copy.pts_sza[isza];
-  //     sza_boundaries[isza] = copy.sza_boundaries[isza];
-  //     sza_boundary_cones[isza] = copy.sza_boundary_cones[isza];
-  //   }
-  //   sza_boundaries[n_sza_boundaries-1] = copy.sza_boundaries[n_sza_boundaries-1];
-  //   sza_boundary_cones[n_sza_boundaries-1] = copy.sza_boundary_cones[n_sza_boundaries-1];
-
-  //   n_pts[0] = copy.n_pts[0];
-  //   n_pts[1] = copy.n_pts[1];
-
-  //   for (int it=0;it<n_theta;it++)
-  //     ray_theta[it] = copy.ray_theta[it];
-  //   raymethod_theta = copy.raymethod_theta;
+    // delete [] n_pts;
     
-  //   for (int ip=0;ip<n_phi;ip++)
-  //     ray_phi[ip] = copy.ray_phi[ip];
-  // }
-  // CUDA_CALLABLE_MEMBER
-  // spherical_azimuthally_symmetric_grid& operator=
-  // (const spherical_azimuthally_symmetric_grid<N_RADIAL_BOUNDARIES,
-  //                                             N_SZA_BOUNDARIES,
-  // 				              N_RAY_THETA,
-  // 				              N_RAY_PHI> &rhs) {
-  //   if(this == &rhs) return *this;
-
-  //   rmethod = rhs.rmethod;
-  //   for (int ir=0; ir<n_radial_boundaries-1; ir++) {
-  //     pts_radii[ir] = rhs.pts_radii[ir];
-  //     log_pts_radii[ir] = rhs.log_pts_radii[ir];
-  //     radial_boundaries[ir] = rhs.radial_boundaries[ir];
-  //     radial_boundary_spheres[ir] = rhs.radial_boundary_spheres[ir];
-  //   }
-  //   radial_boundaries[n_radial_boundaries-1] = rhs.radial_boundaries[n_radial_boundaries-1];
-  //   radial_boundary_spheres[n_radial_boundaries-1] = rhs.radial_boundary_spheres[n_radial_boundaries-1];
-
-  //   szamethod = rhs.szamethod;
-  //   for (int isza=0; isza<n_sza_boundaries-1; isza++) {
-  //     pts_sza[isza] = rhs.pts_sza[isza];
-  //     sza_boundaries[isza] = rhs.sza_boundaries[isza];
-  //     sza_boundary_cones[isza] = rhs.sza_boundary_cones[isza];
-  //   }
-  //   sza_boundaries[n_sza_boundaries-1] = rhs.sza_boundaries[n_sza_boundaries-1];
-  //   sza_boundary_cones[n_sza_boundaries-1] = rhs.sza_boundary_cones[n_sza_boundaries-1];
-
-  //   n_pts[0] = rhs.n_pts[0];
-  //   n_pts[1] = rhs.n_pts[1];
-
-  //   for (int it=0;it<n_theta;it++)
-  //     ray_theta[it] = rhs.ray_theta[it];
-  //   raymethod_theta = rhs.raymethod_theta;
-    
-  //   for (int ip=0;ip<n_phi;ip++)
-  //     ray_phi[ip] = rhs.ray_phi[ip];
-
-  //   return *this;
-  // }
+    delete [] ray_theta;
+    delete [] ray_phi;
+  }
+  void to_device(spherical_azimuthally_symmetric_grid
+		 <N_RADIAL_BOUNDARIES,
+		 N_SZA_BOUNDARIES,
+		 N_RAY_THETA,
+		 N_RAY_PHI> *device_grid);
   
-
   void setup_voxels(const atmosphere &atm) {
     this->rmin = atm.rmin;
     this->rmax = atm.rmax;
@@ -556,5 +516,9 @@ struct spherical_azimuthally_symmetric_grid : grid<2, //this is a 2D grid
   }
 
 };
+
+#ifdef __CUDACC__
+#include "grid_spherical_azimuthally_symmetric_gpu.cu"
+#endif
 
 #endif

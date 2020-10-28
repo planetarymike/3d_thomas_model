@@ -42,17 +42,6 @@ protected:
 
   typedef holstein_approx influence_type;
 
-  // for comparison with Pratik
-  // static const int n_radial_boundaries = 90;
-  // static const int n_sza_boundaries = 32;/*20 for 10 deg increments with szamethod_uniform*/
-  // static const int n_rays_theta = 24;
-  // static const int n_rays_phi = 16;
-
-  //standard resolution case
-  static const int n_radial_boundaries = 40;
-  static const int n_sza_boundaries = 20;/*20 for 10 deg increments with szamethod_uniform*/
-  static const int n_rays_theta = 6;
-  static const int n_rays_phi = 12;
   typedef plane_parallel_grid<n_radial_boundaries,
 			      n_rays_theta> plane_parallel_grid_type;
   RT_grid<n_emissions,
@@ -62,13 +51,13 @@ protected:
   typedef spherical_azimuthally_symmetric_grid<n_radial_boundaries,
 					       n_sza_boundaries,
 					       n_rays_theta,
-					       n_rays_phi> grid_type;
+					       n_rays_phi> sph_azi_sym_grid_type;
   RT_grid<n_emissions,
-	  grid_type,
+	  sph_azi_sym_grid_type,
 	  influence_type> RT;
 
   RT_grid<n_simulate,
-	  grid_type,
+	  sph_azi_sym_grid_type,
 	  influence_type> RT_deriv;
 
 public:

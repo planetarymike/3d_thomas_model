@@ -49,14 +49,14 @@ struct atmo_voxel {
   //atmo_point influence_pt;
   //atmo_point singlescat_pt;
 
-  CUDA_CALLABLE_MEMBER
-  atmo_voxel();
-  CUDA_CALLABLE_MEMBER
-  ~atmo_voxel();
-  CUDA_CALLABLE_MEMBER
-  atmo_voxel(const atmo_voxel &copy);
-  CUDA_CALLABLE_MEMBER
-  atmo_voxel & operator=(const atmo_voxel &rhs);
+  // CUDA_CALLABLE_MEMBER
+  // atmo_voxel();
+  // CUDA_CALLABLE_MEMBER
+  // ~atmo_voxel();
+  // CUDA_CALLABLE_MEMBER
+  // atmo_voxel(const atmo_voxel &copy);
+  // CUDA_CALLABLE_MEMBER
+  // atmo_voxel & operator=(const atmo_voxel &rhs);
 };
 
 

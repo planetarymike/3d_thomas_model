@@ -2,6 +2,7 @@
 //function for comparison with analytic solutions and other models
 
 #include "Real.hpp"
+#include "grid_dims.hpp"
 #include "cuda_compatibility.hpp"
 #include "atm/temperature.hpp"
 #include "atm/chamb_diff_1d.hpp"
@@ -34,17 +35,9 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char* argv[])
   static const int n_emissions = 2;
   string emission_names[n_emissions] = {"H Lyman alpha", "H Lyman beta"};
   
-  // static const int n_radial_boundaries = 40;
-  // static const int n_rays_theta = 6;
-  // static const int n_rays_phi = 12;
   // typedef plane_parallel_grid<n_radial_boundaries,
   // 		                 n_rays_theta> grid_type;
   // atm.spherical = false;
-
-  static const int n_radial_boundaries = 40;
-  static const int n_sza_boundaries = 20;/*20 for 10 deg increments with szamethod_uniform*/
-  static const int n_rays_theta = 6;
-  static const int n_rays_phi = 12;
   typedef spherical_azimuthally_symmetric_grid<n_radial_boundaries,
 					       n_sza_boundaries,
 					       n_rays_phi,
